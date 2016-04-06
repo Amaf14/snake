@@ -4,10 +4,10 @@
 
 Adafruit_PCD8544 display = Adafruit_PCD8544(4, 5, 6, 7, 8);  //Initialise display object
 
-#define LEFT 8
-#define DOWN 11
-#define RIGHT 15
 #define UP 10
+#define DOWN 11
+#define LEFT 8
+#define RIGHT 15
 #define ENTER 9
 #define BACK 12
 #define MAX_WIDTH 84        //display 84x48
@@ -27,12 +27,8 @@ byte marime_sarpe = 1;
 boolean end = false;
 
 
-
-
 int p1 = -1, a;
 bool light = true, border = true;
-
-
 
 
 //#################################################
@@ -52,8 +48,6 @@ void selectare(int a) {
   display.fillRect(8, 15 * a + 5, 4, 7, BLACK);
   //display.display();
 }
-
-
 
 
 void menu(int a) {
