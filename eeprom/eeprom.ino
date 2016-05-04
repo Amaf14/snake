@@ -1,4 +1,5 @@
 
+#include<EEPROM.h>
 void whscore(int a){
 int x=EEPROM.read(0);
 if(x<a)
