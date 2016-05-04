@@ -1,3 +1,4 @@
+#include <EEPROM.h>
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
@@ -32,9 +33,23 @@ int timp = 280;
 boolean sfarsit = false;
 
 
-int pozitie = -1, a;
-bool slumina = false, rama = true;
+int pozitie = -1, a, b;
+bool slumina = true, rama = true;
 
+
+//#################################################
+void whscore(int a){
+  if(EEPROM.read(0) < a)
+    EEPROM.write(0, a);
+}
+
+int rhscore(){
+return EEPROM.read(0);
+}
+
+void rshscore(){
+EEPROM.write(0, 0);
+}
 
 //#################################################
 void ramaf() {
@@ -64,7 +79,8 @@ void menu(int a) {
   display.setCursor(15, 20);
   display.print( F("Setari"));
   display.setCursor(15, 35);
-  display.print( F("Scor"));
+  display.print( F("Scor: "));
+  display.print(rhscore());
   display.display();
 }
 
@@ -202,9 +218,9 @@ void miscare_sarpe() {
         tempy = yy;
       }
       deseneaza_sarpe();
+    }
   }
 }
-
 
 void verificare_joc() {
   for (i = 1; i < lung_sarpe; i++)
@@ -222,7 +238,8 @@ void verificare_fruct() {
       if (timp >= 90)
         timp -= 20;
 
-      display.fillRect(xfruct, yfruct, 3, 3, WHITE); // stergerea fructuluo
+      //display.fillRect(xfruct, yfruct, 3, 3, WHITE); // stergerea fructului
+      display.fillCircle(xfruct, yfruct, 3, WHITE);
       display.display();
 
       xfruct = random(1, 80); // crearea unui fruct nou
@@ -264,7 +281,8 @@ void directie() {
 
 
 void deseneaza_sarpe() {
-  display.fillRect(xfruct, yfruct, 3, 3, BLACK);
+  //display.fillRect(xfruct, yfruct, 3, 3, BLACK);
+  display.fillCircle(xfruct, yfruct, 2, BLACK);
   display.drawCircle(x[0], y[0], marime_sarpe, BLACK);
   display.drawCircle(x[lung_sarpe], y[lung_sarpe], marime_sarpe, WHITE);
   display.display();
@@ -292,6 +310,7 @@ void sfarsit_joc() {
   display.print( F("Scor: "));
   display.print(Scor);
   display.display();
+  whscore(Scor);
   sfarsit = true;
   pozitie=-1;
   reseteaza_joc();
@@ -374,13 +393,13 @@ void loop() {
 
   sfarsit=false;
   initial2();
-  menu(a);
-  if (digitalRead(SUS) == LOW && a != 0)
-    a--;
-  if (digitalRead(JOS) == LOW && a != 2)
-    a++;
+  menu(b);
+  if (digitalRead(SUS) == LOW && b != 0)
+    b--;
+  if (digitalRead(JOS) == LOW && b != 1)
+    b++;
   if (digitalRead(DREAPTA) == LOW)
-    pozitie = a;
+    pozitie=b;
 
   switch (pozitie) {
 
@@ -415,31 +434,13 @@ void loop() {
               rama = false;
             else
               rama = true;
-          if (a == 2) {
-            //Scor=0;
-            display.clearDisplay();
-            display.setTextSize(1);
-            display.setTextColor(BLACK);
-            display.setCursor(15, 5);
-            display.print(F("0000"));
-            display.display();
-          }
+          if (a == 2)
+            rshscore();
+            //pozitie=
         }
         if (digitalRead(STANGA) == LOW && pozitie != 0)
           pozitie = -1;
         delay(50);
-      }
-      break;
-
-    case 2:
-      while (pozitie = 2 && digitalRead(STANGA) != LOW) {
-        display.clearDisplay();
-        display.setTextSize(1);
-        display.setTextColor(BLACK);
-        display.setCursor(15, 5);
-        display.print(F("1337"));
-        display.display();
-        delay(20);
       }
       break;
   }
