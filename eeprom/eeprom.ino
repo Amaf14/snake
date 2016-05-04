@@ -9,3 +9,7 @@ EEPROM.write(0, a);
 int rhscore(){
 return EEPROM.read(0);
 }
+
+void rshscore(){
+EEPROM.write(0, 0);
+}
