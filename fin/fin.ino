@@ -36,17 +36,10 @@ bool slumina = true, rama = true;
 
 
 void flash() {
-  digitalWrite(FLASH, HIGH);
-  delay(50);
-  digitalWrite(FLASH, LOW);
-  delay(50);
-  digitalWrite(FLASH, HIGH);
-  delay(50);
-  digitalWrite(FLASH, LOW);
-  delay(50);
-  digitalWrite(FLASH, HIGH);
-  delay(50);
-  digitalWrite(FLASH, LOW);
+  for(int p=0;p<=2;p++) {
+    puls();
+    delay(50);
+  }
 }
 
 void puls() {
