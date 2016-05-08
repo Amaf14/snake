@@ -10,15 +10,14 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(4, 5, 6, 7, 8);  //pinii ecranului
 #define STANGA 9
 #define DREAPTA 12 //pinii tastelor
 
+#define FLASH 13 //pinul ledului
+
 #define MAX_WIDTH 84
 #define MAX_HEIGHT 48 //dimensiunea ecranului in pixeli
 
 #define lumina 2
 #define marime_sarpe 1
 
-//$$$$$$debug mode
-bool debug=1;
-//$$$$$$debug mode
 
 boolean dstanga = false, ddreapta = false, dsus = false, djos = false; // directia in care se misca sarpele
 int stanga, dreapta, sus, jos;
@@ -32,10 +31,29 @@ int Scor = 0, flag = 0;
 int timp = 280;
 boolean sfarsit = false;
 
-
 int pozitie = -1, a, b;
 bool slumina = true, rama = true;
 
+
+void flash() {
+  digitalWrite(FLASH, HIGH);
+  delay(50);
+  digitalWrite(FLASH, LOW);
+  delay(50);
+  digitalWrite(FLASH, HIGH);
+  delay(50);
+  digitalWrite(FLASH, LOW);
+  delay(50);
+  digitalWrite(FLASH, HIGH);
+  delay(50);
+  digitalWrite(FLASH, LOW);
+}
+
+void puls() {
+  digitalWrite(FLASH, HIGH);
+  delay(50);
+  digitalWrite(FLASH, LOW);
+}
 
 //#################################################
 void whscore(int a){
@@ -79,8 +97,7 @@ void menu(int a) {
   display.setCursor(15, 20);
   display.print( F("Setari"));
   display.setCursor(15, 35);
-  display.print( F("Scor: "));
-  display.print(rhscore());
+  display.print( F("Scor"));
   display.display();
 }
 
@@ -153,8 +170,8 @@ void logo2() {
 
 void initial() {
   lung_sarpe = 5; // marimea initiala a sarpelui este de 5 unitati
-  xfruct = (display.width()) / 2;
-  yfruct = (display.height()) / 2;
+  xfruct = display.width() / 2;
+  yfruct = display.height() / 2;
   for (i = 0; i <= lung_sarpe; i++) {
     x[i] = 25 - 3 * i;
     y[i] = 10;
@@ -166,15 +183,14 @@ void initial() {
 
 void initial2() {
   lung_sarpe = 5;
-  xfruct = (display.width()) / 2;
-  yfruct = (display.height()) / 2;
+  xfruct = display.width() / 2;
+  yfruct = display.height() / 2;
   for (i = 0; i <= lung_sarpe; i++) {
     x[i] = 25 - 3 * i;
     y[i] = 10;
   }
   ddreapta = true;
 }
-
 
 
 void miscare_sarpe() {
@@ -235,6 +251,7 @@ void verificare_fruct() {
     if (y[0] == yfruct or y[0] == (yfruct + 1) or y[0] == (yfruct + 2) or y[0] == (yfruct - 1)){
       Scor += 1; //se mareste scorul si viteza sarpelui
       lung_sarpe += 1;
+      puls();
       if (timp >= 90)
         timp -= 20;
 
@@ -242,8 +259,8 @@ void verificare_fruct() {
       display.fillCircle(xfruct, yfruct, 3, WHITE);
       display.display();
 
-      xfruct = random(1, 80); // crearea unui fruct nou
-      yfruct = random(1, 40);
+      xfruct = random(2, 82); // crearea unui fruct nou
+      yfruct = random(2, 46);
     }
   }
 }
@@ -281,32 +298,20 @@ void directie() {
 
 
 void deseneaza_sarpe() {
-  //display.fillRect(xfruct, yfruct, 3, 3, BLACK);
   display.fillCircle(xfruct, yfruct, 2, BLACK);
   display.drawCircle(x[0], y[0], marime_sarpe, BLACK);
   display.drawCircle(x[lung_sarpe], y[lung_sarpe], marime_sarpe, WHITE);
   display.display();
 }
 
-
-
-
-
-void redeseneaza() {
-  display.fillRect(xfruct, yfruct, 3, 3, BLACK);
-  for (i = 0; i < lung_sarpe; i++)
-    display.drawCircle(x[i], y[i], marime_sarpe, BLACK);
-  display.display();
-}
-
-
 void sfarsit_joc() {
+  flash();
   display.clearDisplay();
   display.setTextColor(BLACK);
   display.setTextSize(1);
   display.setCursor(20, 12);
   display.print( F("Game Over"));
-  display.setCursor(15, 30);
+  display.setCursor(20, 30);
   display.print( F("Scor: "));
   display.print(Scor);
   display.display();
@@ -314,12 +319,12 @@ void sfarsit_joc() {
   sfarsit = true;
   pozitie=-1;
   reseteaza_joc();
-  delay(1000);
+  delay(1500);
 }
 
 void reseteaza_joc() {
   display.clearDisplay();
-  lung_sarpe = 8;
+  lung_sarpe = 5;
   Scor = 0;
   timp = 280;
 }
@@ -350,17 +355,17 @@ void depasit() {
 //####################################################
 
 void setup() {
-  Serial.begin(19200);
-  
   pinMode(3, OUTPUT);
   pinMode(lumina, OUTPUT);
+  pinMode(FLASH, OUTPUT);
   
   digitalWrite(3, HIGH);
+  digitalWrite(FLASH, LOW);
   digitalWrite(lumina, slumina);
   
   display.begin();
   display.clearDisplay();
-  display.setContrast(50);
+  display.setContrast(48);
 
   pinMode(SUS, INPUT);
   pinMode(JOS, INPUT);
@@ -371,32 +376,24 @@ void setup() {
   digitalWrite(JOS, HIGH);
   digitalWrite(DREAPTA, HIGH);
   digitalWrite(STANGA, HIGH);
-
-  //$$$$$$debug mode
-  if(debug==false){
-    logo0();
-    delay(500);
-    logo1();
-    delay(500);
-    logo2();
-    delay(500);
-  }
-  //$$$$$$debug mode
+  
+  logo0();
+  delay(500);
+  logo1();
+  delay(500);
+  logo2();
+  delay(500);
   
   initial();
-
 }
 
 
-
 void loop() {
-
-  sfarsit=false;
-  initial2();
+  
   menu(b);
   if (digitalRead(SUS) == LOW && b != 0)
     b--;
-  if (digitalRead(JOS) == LOW && b != 1)
+  if (digitalRead(JOS) == LOW && b != 2)
     b++;
   if (digitalRead(DREAPTA) == LOW)
     pozitie=b;
@@ -408,6 +405,8 @@ void loop() {
         display.clearDisplay();
         miscare_sarpe();
       }
+      sfarsit=false;
+      initial2();
       break;
 
     case 1:
@@ -436,13 +435,24 @@ void loop() {
               rama = true;
           if (a == 2)
             rshscore();
-            //pozitie=
         }
         if (digitalRead(STANGA) == LOW && pozitie != 0)
           pozitie = -1;
         delay(50);
       }
       break;
+
+      case 2:  
+      while (pozitie = 2 && digitalRead(STANGA) != LOW) {  
+        display.clearDisplay();  
+        display.setTextSize(3);  
+        display.setTextColor(BLACK);  
+        display.setCursor(10, 15);  
+        display.print(rhscore());  
+        display.display();  
+      }  
+      pozitie=-1;
+      break;  
   }
   delay(50);
 }
