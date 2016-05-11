@@ -34,7 +34,8 @@ boolean sfarsit = false;
 int pozitie = -1, a, b;
 bool slumina = true, rama = true;
 
-
+//################################################
+//functii pentru aprinderea ledului
 void flash() {
   for(int p=0;p<=2;p++) {
     puls();
@@ -49,6 +50,7 @@ void puls() {
 }
 
 //#################################################
+//functii pentru scrierea, citirea si stergerea memoriei EEPROM
 void whscore(int a){
   if(EEPROM.read(0) < a)
     EEPROM.write(0, a);
@@ -63,6 +65,7 @@ EEPROM.write(0, 0);
 }
 
 //#################################################
+//functii pentru meniu
 void ramaf() {
   display.setCursor(55, 20);
   display.setTextSize(1);
@@ -78,7 +81,6 @@ void selectare(int a) {
   //display.fillRect(8, 15 * a + 5, 4, 7, BLACK);
   display.drawTriangle(5, 15*a+3, 5, 15*a+13, 10, 15*a+8, BLACK);
 }
-
 
 void menu(int a) {
   display.clearDisplay();
@@ -107,9 +109,8 @@ void setari() {
   display.print( F("Reset Scor"));
 }
 
-
 //################################################################
-
+//functii cu rol estetic
 void ramaf2() {
   int i;
   display.clearDisplay();
@@ -158,9 +159,8 @@ void logo2() {
   display.display();
 }
 
-
 //##############################################
-
+// functiile care se ocupa de miscarea sarpelui
 void initial() {
   lung_sarpe = 5; // marimea initiala a sarpelui este de 5 unitati
   xfruct = display.width() / 2;
@@ -184,7 +184,6 @@ void initial2() {
   }
   ddreapta = true;
 }
-
 
 void miscare_sarpe() {
   while (sfarsit != true) {
@@ -247,8 +246,8 @@ void verificare_fruct() {
       puls();
       if (timp >= 90)
         timp -= 20;
-      // stergerea fructului
-      //display.fillRect(xfruct, yfruct, 3, 3, WHITE);
+
+      //display.fillRect(xfruct, yfruct, 3, 3, WHITE); // stergerea fructului
       display.fillCircle(xfruct, yfruct, 3, WHITE);
       display.display();
 
@@ -257,7 +256,6 @@ void verificare_fruct() {
     }
   }
 }
-
 
 void directie() {
   if (stanga == LOW and ddreapta == false){
@@ -285,10 +283,6 @@ void directie() {
     flag = 1;
   }
 }
-
-
-
-
 
 void deseneaza_sarpe() {
   display.fillCircle(xfruct, yfruct, 2, BLACK);
@@ -322,14 +316,13 @@ void reseteaza_joc() {
   timp = 280;
 }
 
-
 void depasit() {
-  if (tempx <= 0 || tempx >= MAX_WIDTH || tempy <= 0 || tempy >= MAX_HEIGHT)
-    if (rama == true) {
+  if (tempx <= 0 || tempx >= MAX_WIDTH || tempy <= 0 || tempy >= MAX_HEIGHT) //se verifica daca sarpele a atins rama ecranului cu capul
+    if (rama == true) { // daca rama este activa se termina jocul
       sfarsit_joc();
       reseteaza_joc();
     }
-    else {
+    else { //daca nu se reajusteaza pozitia
       if (tempx <= 0)
         tempx = MAX_WIDTH + tempx;
       if (tempx >= MAX_WIDTH)
@@ -341,12 +334,8 @@ void depasit() {
     }
 }
 
-
-
-
-
 //####################################################
-
+//functiile principale ale programului
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(lumina, OUTPUT);
@@ -357,8 +346,9 @@ void setup() {
   digitalWrite(lumina, slumina);
   
   display.begin();
-  display.clearDisplay();
   display.setContrast(48);
+  display.clearDisplay();
+  //crearea comunicatiei, setarea contrastului si golirea ecranului
 
   pinMode(SUS, INPUT);
   pinMode(JOS, INPUT);
@@ -379,7 +369,6 @@ void setup() {
   
   initial();
 }
-
 
 void loop() {
   
@@ -426,8 +415,10 @@ void loop() {
               rama = false;
             else
               rama = true;
-          if (a == 2)
+          if (a == 2) {
             rshscore();
+            puls();
+          }
         }
         if (digitalRead(STANGA) == LOW && pozitie != 0)
           pozitie = -1;
