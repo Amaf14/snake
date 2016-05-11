@@ -247,8 +247,8 @@ void verificare_fruct() {
       puls();
       if (timp >= 90)
         timp -= 20;
-
-      //display.fillRect(xfruct, yfruct, 3, 3, WHITE); // stergerea fructului
+      // stergerea fructului
+      //display.fillRect(xfruct, yfruct, 3, 3, WHITE);
       display.fillCircle(xfruct, yfruct, 3, WHITE);
       display.display();
 
