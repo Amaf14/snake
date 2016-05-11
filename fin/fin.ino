@@ -13,7 +13,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(4, 5, 6, 7, 8);  //pinii ecranului
 #define FLASH 13 //pinul ledului
 
 #define MAX_WIDTH 84
-#define MAX_HEIGHT 48 //dimensiunea ecranului in pixeli
+#define MAX_HEIGHT 44 //dimensiunea ecranului in pixeli
 
 #define lumina 2
 #define marime_sarpe 1
@@ -26,6 +26,8 @@ int x[50], y[50], tempx = 10, tempy = 10, xx, yy;
 int i, lung_sarpe;
 
 int xfruct, yfruct; //coordonatele fructului
+
+int viata=3, k, z=3, j; //viata jucatorului
 
 int Scor = 0, ok = 0;
 int timp = 280;
@@ -164,7 +166,7 @@ void logo2() {
 void initial() {
   lung_sarpe = 5; // marimea initiala a sarpelui este de 5 unitati
   xfruct = display.width() / 2;
-  yfruct = display.height() / 2;
+  yfruct = display.height() / 2-4;
   for (i = 0; i <= lung_sarpe; i++) {
     x[i] = 25 - 3 * i;
     y[i] = 10;
@@ -177,7 +179,7 @@ void initial() {
 void initial2() {
   lung_sarpe = 5;
   xfruct = display.width() / 2;
-  yfruct = display.height() / 2;
+  yfruct = display.height() / 2-4;
   for (i = 0; i <= lung_sarpe; i++) {
     x[i] = 25 - 3 * i;
     y[i] = 10;
@@ -191,6 +193,12 @@ void miscare_sarpe() {
     jos = digitalRead(JOS);
     dreapta = digitalRead(DREAPTA);
     sus = digitalRead(SUS);
+
+    for(int k=1;k<=viata;k++)
+      if(k<=z)
+      display.drawCircle(5*k, 45, 2, BLACK);
+      else
+      display.drawCircle(5*k, 45, 2, WHITE);
 
     if (ok == 0)
       directie();
@@ -232,10 +240,19 @@ void miscare_sarpe() {
 
 void verificare_joc() {
   for (i = 1; i < lung_sarpe; i++)
-    if (x[i] == x[0] && y[i] == y[0]){
-      sfarsit_joc();
-      reseteaza_joc();
-    }
+    if (x[i] == x[0] && y[i] == y[0]) {
+      if(viata!=0) {
+        puls();
+        for(j=i; j<=lung_sarpe; j++) {
+          display.drawCircle(x[j], y[j], marime_sarpe, WHITE);
+          x[j] = y[j] = 0;
+          }
+        lung_sarpe=i;
+        z-=1;}
+      else {
+        sfarsit_joc();
+        reseteaza_joc();}
+        }
 }
 
 void verificare_fruct() {
@@ -252,7 +269,7 @@ void verificare_fruct() {
       display.display();
 
       xfruct = random(2, 82); // crearea unui fruct nou
-      yfruct = random(2, 46);
+      yfruct = random(2, 42);
     }
   }
 }
@@ -314,6 +331,7 @@ void reseteaza_joc() {
   lung_sarpe = 5;
   Scor = 0;
   timp = 280;
+  viata = z = 3;
 }
 
 void depasit() {
