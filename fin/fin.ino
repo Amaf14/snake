@@ -164,7 +164,7 @@ void logo2() {
 //##############################################
 // functiile care se ocupa de miscarea sarpelui
 void initial() {
-  lung_sarpe = 5; // marimea initiala a sarpelui este de 5 unitati
+  lung_sarpe = 15; // marimea initiala a sarpelui este de 5 unitati
   xfruct = display.width() / 2;
   yfruct = display.height() / 2-4;
   for (i = 0; i <= lung_sarpe; i++) {
@@ -177,7 +177,7 @@ void initial() {
 }
 
 void initial2() {
-  lung_sarpe = 5;
+  lung_sarpe = 15;
   xfruct = display.width() / 2;
   yfruct = display.height() / 2-4;
   for (i = 0; i <= lung_sarpe; i++) {
@@ -245,7 +245,8 @@ void verificare_joc() {
         puls();
         for(j=i; j<=lung_sarpe; j++) {
           display.drawCircle(x[j], y[j], marime_sarpe, WHITE);
-          x[j] = y[j] = 0;
+          x[j] = 0; 
+          y[j] = 0;
           }
         lung_sarpe=i;
         z-=1;}
@@ -328,10 +329,11 @@ void sfarsit_joc() {
 
 void reseteaza_joc() {
   display.clearDisplay();
-  lung_sarpe = 5;
+  lung_sarpe = 15;
   Scor = 0;
   timp = 280;
-  viata = z = 3;
+  viata = 3;
+  z = 3;
 }
 
 void depasit() {
