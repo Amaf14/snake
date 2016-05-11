@@ -27,7 +27,7 @@ int i, lung_sarpe;
 
 int xfruct, yfruct; //coordonatele fructului
 
-int Scor = 0, flag = 0;
+int Scor = 0, ok = 0;
 int timp = 280;
 boolean sfarsit = false;
 
@@ -192,10 +192,10 @@ void miscare_sarpe() {
     dreapta = digitalRead(DREAPTA);
     sus = digitalRead(SUS);
 
-    if (flag == 0)
+    if (ok == 0)
       directie();
     if (millis() % timp == 0) {
-      if (flag == 0) {
+      if (ok == 0) {
         if (ddreapta == true) {
           tempx = x[0] + 3;
           tempy = y[0];
@@ -213,7 +213,7 @@ void miscare_sarpe() {
           tempx = x[0];
         }
       }
-      flag = 0;
+      ok = 0;
       verificare_joc();
       verificare_fruct();
       depasit();
@@ -262,25 +262,25 @@ void directie() {
     dstanga = true; dsus = false; djos = false;
     tempx = x[0] - 3;
     tempy = y[0];
-    flag = 1;
+    ok = 1;
   }
   else if (dreapta == LOW and dstanga == false){
     ddreapta = true; dsus = false; djos = false;
     tempx = x[0] + 3;
     tempy = y[0];
-    flag = 1;
+    ok = 1;
   }
   else if (sus == LOW and djos == false){
     dsus = true; dstanga = false; ddreapta = false;
     tempy = y[0] - 3;
     tempx = x[0];
-    flag = 1;
+    ok = 1;
   }
   else if (jos == LOW and dsus == false){
     djos = true; dstanga = false; ddreapta = false;
     tempy = y[0] + 3;
     tempx = x[0];
-    flag = 1;
+    ok = 1;
   }
 }
 
@@ -346,7 +346,7 @@ void setup() {
   digitalWrite(lumina, slumina);
   
   display.begin();
-  display.setContrast(48);
+  display.setContrast(49);
   display.clearDisplay();
   //crearea comunicatiei, setarea contrastului si golirea ecranului
 
@@ -417,6 +417,8 @@ void loop() {
               rama = true;
           if (a == 2) {
             rshscore();
+            puls();
+            delay(100);
             puls();
           }
         }
